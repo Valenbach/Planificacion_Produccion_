@@ -1,7 +1,16 @@
 #**********************************DICCIONARIO PARA GUARDAR PROCESOS******************************************
 procesos_guardados = []  # Lista para almacenar todos los procesos cargados
 
-#********************************Función para cargar datos:*********************************************
+
+#****************************************Función para calcular glucosa***********************************
+
+#prueba
+#**************************Función para calcular horas de trabajo por operario***************************
+
+#********************************Función para cargar datos:**********************************************
+
+#************************FUNCIÓN PARA CALCULAR VOLUMEN DE MEDIO DE EXPANCIÓN*****************************
+#prueba?
 def cargar_datos_proceso():
    #Se crea un diccionario que será completado con las características de la molécula.
     proceso = []
@@ -51,7 +60,7 @@ def calcular_costos():
     
     for i, proceso in enumerate(procesos_guardados):
         total_dias = sum(proceso[1])  # Sumamos las duraciones de las etapas
-        costo_total = total_dias * 100  # Ejemplo: supongamos que cada día cuesta 100 unidades
+        costo_total = total_dias * 100  # Ejemplo: supongamos que cada día cuesta $100 (A DEFINÍR)
         print(f"El costo total del proceso {proceso[0][0]} es: ${costo_total}")
     
 #***********************************MENÚ PRINCIPAL******************************************

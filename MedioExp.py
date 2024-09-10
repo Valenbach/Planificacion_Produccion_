@@ -20,6 +20,9 @@ def calcularMedioExp(listavolFinalPasajes):
     volMedioExp=sum(listavolFinalPasajes)
     return volMedioExp
 VCDi=float(input("Ingrese el valor de VCD con la que desea iniciar cada pasaje: "))
+while VCDi <= 0:
+    VCDi = float(input("Ha ingresado un valor no permitido. Reingrese el valor de VCD con la que desea iniciar cada pasaje: "))
+
 cantPasajes=int(input("Ingrese la cantidad de pasajes que desea efectuar durante la etapa de expansión: "))
 VCDtarget=listaVCDtarget(cantPasajes)
 volInicial=int(input("Ingrese el volumen inicial del primer pasaje, en ml: "))   

@@ -1,4 +1,5 @@
 
+import unicodedata
 #######################################################################################
 #Con la combinación de las siguientes funciones se establece el volúmen final a utilizar de medio de expansión, de acuerdo a los requerimientos del cliente.
 def listaVCDtarget(cantPasajes):
@@ -32,6 +33,33 @@ def MatrizComoTabla(matriz,ancho_columna):
             print(f"{elemento:>{ancho_columna}}",end=" | ")
         print()
 #######################################################################################
+def agregar_solucion_adicional():
+    # Preguntar si se desea agregar una solución adicional durante la etapa productiva
+    agregar_solucion = input("¿Desea agregar una solución adicional durante la etapa productiva? (si/no): ").strip().lower()
+    # Remover acentos
+    agregar_solucion = unicodedata.normalize('NFD', agregar_solucion).encode('ascii', 'ignore').decode('utf-8')
+    if agregar_solucion == "si":
+        volumen_adicional = float(input("Ingrese el volumen de la solución adicional en ml: "))
+        return volumen_adicional
+    else:
+        return None
+#######################################################################################
+#Combinación de funciones para calucular la glucosa necesaria para el proceso, durante la etapa productiva:
+def tasa_crecimiento():
+    pass
+def calGlucConsumida():
+    pass
+def listaGlucEsperada():
+    pass
+def AgregadosGluc():
+    pass
+#######################################################################################
+def calcular_costos():
+    pass
+#######################################################################################
+def calcular_productividad():
+    pass
+#######################################################################################
 def cargar_datos_proceso():
     # Se crea un diccionario que será completado con las características de la molécula.
     proceso = {}
@@ -40,16 +68,21 @@ def cargar_datos_proceso():
     nombre_molecula = input("Ingrese el nombre de la molécula: ")
     proceso["nombre_molecula"] = nombre_molecula 
     
+    #Bloque estapa de expansión
     VCDi=float(input("Ingrese el valor de VCD con la que desea iniciar cada pasaje: "))
     cantPasajes=int(input("Ingrese la cantidad de pasajes que desea efectuar durante la etapa de expansión: "))
+    diasxpasaje=int(input("Ingrese la cantidad de días que desea que tenga cada pasaje: "))
+    calcular_dias_Exp=lambda diasxpasaje,cantPasajes: cantPasajes*diasxpasaje
     volInicial=int(input("Ingrese el volumen inicial del primer pasaje, en ml: "))
     VCDstarget=listaVCDtarget(cantPasajes)
     ListavolFinalPasajes=calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicial)
+    # Calcular el volumen total de medio de expansión necesario
     proceso["Volumen de Medio de Expansión necesario"]="{:.1f}".format(calcularMedioExp(ListavolFinalPasajes))
     
+    #Bloque de estapa productiva
     cantdiasFB=int(input("Ingrese la cantidad de días de la etapa productiva que tendrá su proceso: "))
     periodoFeed=int(input("Ingrese cada cuántos días se agregará el Feed: "))
-    #Creación de una matriz de forma estática:
+    ###Creación de una matriz de forma estática:
     matrizBrx=[["Biorreactor","BRX500","BRX1000","BRX2000"],["Volúmen mínimo","150","300","600"],["Volúmen máximo","550","1100","2200"]]
     ANCHO_COLUMNA=15
     print("Considerando los siguientes volúmenes mínimos y máximos permitidos por los biorreactores disponibles: ")
@@ -71,12 +104,25 @@ def cargar_datos_proceso():
             volFinalFB = float(input("Ingrese un nuevo valor para volFinalFB dentro del rango permitido: "))
     proceso["Volumen_Inicial"]=volInicialFB
     
-    #Calculo de Cantidad de Medio Productivo necesario en el proceso:
+    #Calculo de Cantidad de Medio Productivo por agregado necesario en el proceso:
     diasFB=(lambda n: list(range(n)))(cantdiasFB+1)
     diasAgregadoFeed=diasFB[1::periodoFeed]
-    cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: ((volFinalFB+volInicialFB)/(len(diasAgregadoFeed))) 
+    cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: "{:.1f}".format((volFinalFB+volInicialFB)/(len(diasAgregadoFeed))) 
     proceso["Volumen_feed_por_agregado"]=cantFeedPorAgregado(diasAgregadoFeed,volFinalFB,volInicialFB)
-    return proceso       
+    
+    proceso["Duracion_Proceso"] = calcular_dias_Exp(diasxpasaje, cantPasajes) + cantdiasFB
+    
+    
+    volumen_sol_adicional = agregar_solucion_adicional()
+    if volumen_sol_adicional is not None:
+        proceso["Volumen_Solución_Adicional"] = "{:.1f}".format(volumen_sol_adicional)
+    else:
+        proceso["Volumen_Solución_Adicional"] = "No se agrega solución adicional" 
+     
+    
+    return proceso
+    
+         
 #######################################################################################
 #Función para mostrar procesos guardados:
 def mostrar_todos_los_procesos():
@@ -91,10 +137,12 @@ def mostrar_todos_los_procesos():
 def mostrar_proceso(proceso):
     """Función para mostrar los detalles de un proceso"""
     print(f"Nombre de la molécula: {proceso['nombre_molecula']}")
+    print(f"Duración del Proceso: {proceso['Duracion_Proceso']}")
     print(f"Volumen de Medio de Expansión necesario: {proceso['Volumen de Medio de Expansión necesario']} ml")
     print(f"Volumen de Medio de Productivo con el que se debe iniciar el proceso: {proceso['Volumen_Inicial']} litros")
     print(f"Volumen de Solución Feed a añadir en cada agregado: {proceso['Volumen_feed_por_agregado']} litros")
-
+    print(f"Volumen de Solución Adicional: {proceso['Volumen_Solución_Adicional']} ml")
+    
 #######################################################################################
 #Programa Principal:
 procesos_guardados={}

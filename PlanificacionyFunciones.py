@@ -1,13 +1,12 @@
 
-import unicodedata
 #######################################################################################
 #Con la combinación de las siguientes funciones se establece el volúmen final a utilizar de medio de expansión, de acuerdo a los requerimientos del cliente.
 def listaVCDtarget(cantPasajes):
      #Generar una lista en la que se almacene la VCD que se desea alcanzar en cada pasaje.
     VCDstarget=[]
     for i in range(cantPasajes):
-        VCDtarget=float(input(f"Ingrese el valor de VCD target para el pasaje {i+1}: "))
-        VCDstarget.append(VCDtarget)
+        VCDtargetIngreso=input(f"Ingrese el valor de VCD target para el pasaje {i+1}: ").replace(',', '.')
+        VCDtarget=float(VCDtargetIngreso)
     return VCDstarget
 
 def calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicial):
@@ -35,9 +34,8 @@ def MatrizComoTabla(matriz,ancho_columna):
 #######################################################################################
 def agregar_solucion_adicional():
     # Preguntar si se desea agregar una solución adicional durante la etapa productiva
-    agregar_solucion = input("¿Desea agregar una solución adicional durante la etapa productiva? (si/no): ").strip().lower()
+    agregar_solucion = input("¿Desea agregar una solución adicional durante la etapa productiva? (si/no): ").strip().lower().replace('í', 'i')
     # Remover acentos
-    agregar_solucion = unicodedata.normalize('NFD', agregar_solucion).encode('ascii', 'ignore').decode('utf-8')
     if agregar_solucion == "si":
         volumen_adicional = float(input("Ingrese el volumen de la solución adicional en ml: "))
         return volumen_adicional
@@ -69,7 +67,8 @@ def cargar_datos_proceso():
     proceso["nombre_molecula"] = nombre_molecula 
     
     #Bloque estapa de expansión
-    VCDi=float(input("Ingrese el valor de VCD con la que desea iniciar cada pasaje: "))
+    VCDinicial=input("Ingrese el valor de VCD con la que desea iniciar cada pasaje: ").replace(',', '.')
+    VCDi=float(VCDinicial)
     cantPasajes=int(input("Ingrese la cantidad de pasajes que desea efectuar durante la etapa de expansión: "))
     diasxpasaje=int(input("Ingrese la cantidad de días que desea que tenga cada pasaje: "))
     calcular_dias_Exp=lambda diasxpasaje,cantPasajes: cantPasajes*diasxpasaje

@@ -19,10 +19,10 @@ def calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicial):
     """
     listavolFinalPasajes=[]
     for i in range(cantPasajes):
-        volFinalPasaje=(VCDi*volInicial)/VCDstarget[i]
+        volFinalPasaje=(VCDi*volInicialExp)/VCDstarget[i]
         listavolFinalPasajes.append(volFinalPasaje)
         VCDi=VCDstarget[i]
-        volInicial=volFinalPasaje 
+        volInicialExp=volFinalPasaje 
     return listavolFinalPasajes
 
 def calcularMedioExp(listavolFinalPasajes):
@@ -50,8 +50,10 @@ def agregar_solucion_adicional():
     """
     agregar_solucion = input("¿Desea agregar una solución adicional durante la etapa productiva? (si/no): ").strip().lower().replace('í', 'i') # Comandos para pasar la respuesta ingresada por teclado a minúscula y remover el acento de ser necesario.
     if agregar_solucion == "si":
-        volumen_adicional = float(input("Ingrese el volumen de la solución adicional en ml: "))
-        return volumen_adicional
+        volumen_adicional = float(input("Ingrese el volumen de la solución adicional en ml que se añadirá en cada agregado: "))
+        periodo_sol_adicional=float(input("Por cuantos días agregará esta solución: "))
+        volumen_adicional_total=volumen_adicional*periodo_sol_adicional
+        return volumen_adicional_total
     else:
         return None
 #######################################################################################
@@ -87,7 +89,7 @@ def cargar_datos_proceso(nombre_molecula,ListavolFinalPasajes,volInicialFB,diasA
        
     proceso["nombre_molecula"] = nombre_molecula 
     
-    proceso["Volumen de Medio de Expansión necesario"]="{:.1f}".format(calcularMedioExp(ListavolFinalPasajes))
+    proceso["Volumen de Medio de Expansión necesario"]="{:.1f}".format(calcularMedioExp(ListavolFinalPasajes,volInicialExp))
       
     proceso["Volumen_Inicial"]=volInicialFB
         
@@ -155,13 +157,10 @@ while True:
             #Función lambda para calcular el total de los días de la estapa de expansión:
             calcular_dias_Exp=lambda diasxpasaje,cantPasajes: cantPasajes*diasxpasaje
 
-            volInicial=int(input("Ingrese el volumen inicial del primer pasaje, en ml: "))
+            volInicialExp=int(input("Ingrese el volumen inicial del primer pasaje, en ml: "))
             VCDstarget=listaVCDtarget(cantPasajes)
-            ListavolFinalPasajes=calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicial)
+            ListavolFinalPasajes=calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp)
 
-
-            cantdiasFB=int(input("Ingrese la cantidad de días de la etapa productiva que tendrá su proceso: "))
-            periodoFeed=int(input("Ingrese cada cuántos días se agregará el Feed: "))
 
             #Creación de una matriz de forma estática:
             matrizBrx=[["Biorreactor","BRX500","BRX1000","BRX2000"],["Volúmen mínimo","150","300","600"],["Volúmen máximo","550","1100","2200"]]
@@ -195,7 +194,7 @@ while True:
             Función lambda para el calculo de Cantidad de Medio Productivo por agregado necesario en el proceso:
             """
             diasAgregadoFeed=diasFB[1::periodoFeed]
-            cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: "{:.1f}".format((volFinalFB+volInicialFB)/(len(diasAgregadoFeed))) 
+            cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: "{:.1f}".format((volFinalFB-volInicialFB)/(len(diasAgregadoFeed))) 
             
             proceso = cargar_datos_proceso(nombre_molecula,ListavolFinalPasajes,volInicialFB,diasAgregadoFeed,volFinalFB,diasxpasaje,cantPasajes,cantdiasFB)
             procesos_guardados[proceso["nombre_molecula"]]=proceso #Guardar el proceso en la lista global

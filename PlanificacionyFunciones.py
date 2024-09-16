@@ -37,8 +37,10 @@ def agregar_solucion_adicional():
     # Preguntar si se desea agregar una solución adicional durante la etapa productiva, en caso afirmativo consultar qué volumen de esta solución se agregará.
     agregar_solucion = input("¿Desea agregar una solución adicional durante la etapa productiva? (si/no): ").strip().lower().replace('í', 'i') # Comandos para pasar la respuesta ingresada por teclado a minúscula y remover el acento de ser necesario.
     if agregar_solucion == "si":
-        volumen_adicional = float(input("Ingrese el volumen de la solución adicional en ml: "))
-        return volumen_adicional
+        volumen_adicional = float(input("Ingrese el volumen de la solución adicional en ml que se añadirá en cada agregado: "))
+        periodo_sol_adicional=float(input("Por cuantos días agregará esta solución: "))
+        volumen_adicional_total=volumen_adicional*periodo_sol_adicional
+        return volumen_adicional_total
     else:
         return None
 #######################################################################################
@@ -134,9 +136,6 @@ while True:
             ListavolFinalPasajes=calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp)
 
 
-            cantdiasFB=int(input("Ingrese la cantidad de días de la etapa productiva que tendrá su proceso: "))
-            periodoFeed=int(input("Ingrese cada cuántos días se agregará el Feed: "))
-
             #Creación de una matriz de forma estática:
             matrizBrx=[["Biorreactor","BRX500","BRX1000","BRX2000"],["Volúmen mínimo","150","300","600"],["Volúmen máximo","550","1100","2200"]]
             ANCHO_COLUMNA=15
@@ -160,12 +159,15 @@ while True:
                     print("El valor de volúmen Final ingresado no está dentro del rango permitido.")
                     volFinalFB = float(input("Ingrese un nuevo valor para volFinalFB dentro del rango permitido: "))
 
-            #Función lambda para armar una lista con números en un rango de 0 hasta n de acuerdo a la cntidad de días de la etapa productiva: 
-            diasFB=(lambda n: list(range(n)))(cantdiasFB+1)
+            cantdiasFB=int(input("Ingrese la cantidad de días de la etapa productiva que tendrá su proceso: "))
+            periodoFeed=int(input("Ingrese cada cuántos días se agregará el Feed: "))
+             
+            #Función lambda para armar una lista con números en un rango de 0 hasta n-1 de acuerdo a la cantidad de días de la etapa productiva: 
+            diasFB=(lambda n: list(range(n)))(cantdiasFB)
 
             #Función lambda para el calculo de Cantidad de Medio Productivo por agregado necesario en el proceso:
             diasAgregadoFeed=diasFB[1::periodoFeed]
-            cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: "{:.1f}".format((volFinalFB+volInicialFB)/(len(diasAgregadoFeed))) 
+            cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: "{:.1f}".format((volFinalFB-volInicialFB)/(len(diasAgregadoFeed))) 
             
             proceso = cargar_datos_proceso(nombre_molecula,ListavolFinalPasajes,volInicialFB,diasAgregadoFeed,volFinalFB,diasxpasaje,cantPasajes,cantdiasFB)
             procesos_guardados[proceso["nombre_molecula"]]=proceso #Guardar el proceso en la lista global

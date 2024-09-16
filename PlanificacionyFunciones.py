@@ -1,10 +1,12 @@
-#######################################################################################
+#################################FUNCIONES PARA CALCULAR VOLUMEN TOTAL DEL MEDIO################################################
 """"
-Con la combinación de las siguientes funciones se establece el volúmen final a utilizar de medio de expansión, de acuerdo a los requerimientos del cliente.
+Con la combinación de las siguientes funciones se establece el volúmen final a utilizar de medio de expansión, 
+de acuerdo a los requerimientos del cliente.
 """
 def listaVCDtarget(cantPasajes):
     """"
-    Generar una lista en la que se almacene la VCD que se desea alcanzar en cada pasaje, recibe como parámetro la cantidad de pasajes, la cual es ingresada por teclado (por el usuario).
+    Generar una lista en la que se almacene la VCD que se desea alcanzar en cada pasaje, r
+    ecibe como parámetro la cantidad de pasajes, la cual es ingresada por teclado (por el usuario).
     """
 
     VCDstarget=[]
@@ -15,8 +17,10 @@ def listaVCDtarget(cantPasajes):
     return VCDstarget
 
 def calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp):
+    
     """"
-    Realizar el cálculo del volumen final que tendrá cada pasaje y a su vez generar una lista en la que se almacenen estos volúmenes, recibe como parámetro VCD inicial de la etapa de expansión, cantidad de pasajes de la etapa de expansión y volúmen inicial del primer pasaje, todos ingresados por teclado (por el usuario); y VCD target (objetivo) que cada pasaje deberá alcanzar, este último dato se toma de la lista generada en la función anterior (listaVCDtarget).
+    Realizar el cálculo del volumen final que tendrá cada pasaje y a su vez generar una lista en la que se almacenen estos volúmenes,
+    recibe como parámetro VCD inicial de la etapa de expansión, cantidad de pasajes de la etapa de expansión y volúmen inicial del primer pasaje, todos ingresados por teclado (por el usuario); y VCD target (objetivo) que cada pasaje deberá alcanzar, este último dato se toma de la lista generada en la función anterior (listaVCDtarget).
     """
     listavolFinalPasajes=[]
     for i in range(cantPasajes):
@@ -28,7 +32,8 @@ def calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp):
 
 def calcularMedioExp(listavolFinalPasajes,volInicialExp):
     """"
-    Sumar los pesos de los volumenes finales de cada pasaje para calcular el volumen final de medio de expansión necesario, recibe como parámetro la lista de los volúmenes de los pasajes calculados en la función anterior (calcularVolFinalPasajes).
+    Sumar los pesos de los volumenes finales de cada pasaje para calcular el volumen final de medio de expansión necesario, 
+    recibe como parámetro la lista de los volúmenes de los pasajes calculados en la función anterior (calcularVolFinalPasajes).
     """
     volMedioExp=sum(listavolFinalPasajes)+volInicialExp
     return volMedioExp
@@ -38,7 +43,8 @@ def calcularMedioExp(listavolFinalPasajes,volInicialExp):
 """
 def MatrizComoTabla(matriz,ancho_columna):
     """
-    Imprimir una matriz en forma de tabla. Recibe como parámetros: una matriz y el ancho de la columna de la tabla(máximo de caracteres para que se ajusten las columnas).
+    Imprimir una matriz en forma de tabla. Recibe como parámetros: una matriz y el ancho de la columna de la tabla
+    (máximo de caracteres para que se ajusten las columnas).
     """
     for fila in matriz:
         for elemento in fila:
@@ -47,7 +53,8 @@ def MatrizComoTabla(matriz,ancho_columna):
 #######################################################################################
 def agregar_solucion_adicional():
     """"
-    Preguntar si se desea agregar una solución adicional durante la etapa productiva, en caso afirmativo consultar qué volumen de esta solución se agregará.
+    Preguntar si se desea agregar una solución adicional durante la etapa productiva, 
+    en caso afirmativo consultar qué volumen de esta solución se agregará.
     """
     agregar_solucion = input("¿Desea agregar una solución adicional durante la etapa productiva? (si/no): ").strip().lower().replace('í', 'i') # Comandos para pasar la respuesta ingresada por teclado a minúscula y remover el acento de ser necesario.
     if agregar_solucion == "si":
@@ -84,7 +91,8 @@ def calcular_productividad():
 #######################################################################################
 def cargar_datos_proceso(nombre_molecula,ListavolFinalPasajes,volInicialFB,diasAgregadoFeed,volFinalFB,diasxpasaje,cantPasajes,cantdiasFB):
     """"
-    Crear un diccionario que será completado con las características de la molécula.Parámetros de ingreso: nombre_molecula,ListavolFinalPasajes,volInicialFB,diasAgregadoFeed,volFinalFB,diasxpasaje,cantPasajes,cantdiasFB.
+    Crear un diccionario que será completado con las características de la molécula.
+    Parámetros de ingreso: nombre_molecula,ListavolFinalPasajes,volInicialFB,diasAgregadoFeed,volFinalFB,diasxpasaje,cantPasajes,cantdiasFB.
     """
     proceso = {}
        
@@ -109,7 +117,7 @@ def cargar_datos_proceso(nombre_molecula,ListavolFinalPasajes,volInicialFB,diasA
 """
 Combinación de funciones para mostrar procesos guardados:
 """
-def mostrar_todos_los_procesos():
+def mostrar_todos_los_procesos(procesos_guardados):
     #Mostrar todos los procesos guardados.
     if not procesos_guardados:
         print("No hay procesos almacenados.")
@@ -184,7 +192,7 @@ while True:
             volFinalFB=int(input("Ingrese el vólumen final al cual desea llegar en su etapa productiva en litros: "))
             Bandera=True
             while Bandera:
-                if volFinalFB<=550:
+                if volFinalFB<=550 and volFinalFB>= 300:
                     volInicialFB=150
                     Bandera = False
                 elif volFinalFB>550 and volFinalFB<=1100:

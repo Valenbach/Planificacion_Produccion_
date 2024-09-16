@@ -9,19 +9,19 @@ def listaVCDtarget(cantPasajes):
         VCDstarget.append(VCDtarget)
     return VCDstarget
 
-def calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicial):
+def calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp):
     #Realizar el cálculo del volumen final que tendrá cada pasaje y a su vez generar una lista en la que se almacenen estos volúmenes, recibe como parámetro VCD inicial de la etapa de expansión, cantidad de pasajes de la etapa de expansión y volúmen inicial del primer pasaje, todos ingresados por teclado (por el usuario); y VCD target (objetivo) que cada pasaje deberá alcanzar, este último dato se toma de la lista generada en la función anterior (listaVCDtarget).
     listavolFinalPasajes=[]
     for i in range(cantPasajes):
-        volFinalPasaje=(VCDi*volInicial)/VCDstarget[i]
+        volFinalPasaje=(VCDi*volInicialExp)/VCDstarget[i]
         listavolFinalPasajes.append(volFinalPasaje)
         VCDi=VCDstarget[i]
-        volInicial=volFinalPasaje 
+        volInicialExp=volFinalPasaje 
     return listavolFinalPasajes
 
-def calcularMedioExp(listavolFinalPasajes):
+def calcularMedioExp(listavolFinalPasajes,volInicialExp):
     #Sumar los pesos de los volumenes finales de cada pasaje para calcular el volumen final de medio de expansión necesario, recibe como parámetro la lista de los volúmenes de los pasajes calculados en la función anterior (calcularVolFinalPasajes).
-    volMedioExp=sum(listavolFinalPasajes)
+    volMedioExp=sum(listavolFinalPasajes)+volInicialExp
     return volMedioExp
 
 #######################################################################################
@@ -66,7 +66,7 @@ def cargar_datos_proceso(nombre_molecula,ListavolFinalPasajes,volInicialFB,diasA
        
     proceso["nombre_molecula"] = nombre_molecula 
     
-    proceso["Volumen de Medio de Expansión necesario"]="{:.1f}".format(calcularMedioExp(ListavolFinalPasajes))
+    proceso["Volumen de Medio de Expansión necesario"]="{:.1f}".format(calcularMedioExp(ListavolFinalPasajes,volInicialExp))
       
     proceso["Volumen_Inicial"]=volInicialFB
         
@@ -129,9 +129,9 @@ while True:
             #Función lambda para calcular el total de los días de la estapa de expansión:
             calcular_dias_Exp=lambda diasxpasaje,cantPasajes: cantPasajes*diasxpasaje
 
-            volInicial=int(input("Ingrese el volumen inicial del primer pasaje, en ml: "))
+            volInicialExp=int(input("Ingrese el volumen inicial del primer pasaje, en ml: "))
             VCDstarget=listaVCDtarget(cantPasajes)
-            ListavolFinalPasajes=calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicial)
+            ListavolFinalPasajes=calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp)
 
 
             cantdiasFB=int(input("Ingrese la cantidad de días de la etapa productiva que tendrá su proceso: "))

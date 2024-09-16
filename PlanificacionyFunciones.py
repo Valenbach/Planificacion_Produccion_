@@ -117,7 +117,7 @@ def cargar_datos_proceso(nombre_molecula,ListavolFinalPasajes,volInicialFB,diasA
 """
 Combinación de funciones para mostrar procesos guardados:
 """
-def mostrar_todos_los_procesos(procesos_guardados):
+def mostrar_todos_los_procesos():
     #Mostrar todos los procesos guardados.
     if not procesos_guardados:
         print("No hay procesos almacenados.")

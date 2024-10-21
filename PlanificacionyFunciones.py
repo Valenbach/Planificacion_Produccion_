@@ -145,10 +145,6 @@ def cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, di
     
     proceso["Agregados_Glucosa"]=["{:.2f}".format(tasa) for tasa in lista_Agregados_Gluc]
     
-    
-    
-    
-        
     volumen_sol_adicional = agregar_solucion_adicional()
     if volumen_sol_adicional is not None:
         proceso["Volumen_Solución_Adicional"] = "{:.1f}".format(volumen_sol_adicional)
@@ -172,7 +168,6 @@ def mostrar_todos_los_procesos():
 def mostrar_proceso(proceso):
     """
     Mostrar los detalles de un proceso guardados en la función "cargar_datos_proceso" como valores de las claves.
-    
     """
     print(f"Nombre de la molécula: {proceso['nombre_molecula']}")
     print(f"Duración del Proceso: {proceso['Duracion_Proceso']}")
@@ -190,7 +185,8 @@ def mostrar_proceso(proceso):
 
 """
 procesos_guardados={}
-while True:
+try:
+    while True:
         print("\nBienvenido al menú principal, seleccione una opción para continuar\n")
         print("1. Cargar nuevo proceso")
         print("2. Ver procesos guardados")
@@ -301,6 +297,14 @@ while True:
         
         else:
             print("Opción no válida. Por favor, intente nuevamente.")
+            
+            
+except ValueError as e:
+    print(f"Error de valor: {e}. Asegúrese de ingresar los datos correctamente.")
+except Exception as e:
+    print(f"Ocurrió un error inesperado: {e}. Por favor, intente nuevamente.")
+finally:
+    print("El programa ha finalizado, gracias por utilizarlo.")
 
 #######################################################################################
  

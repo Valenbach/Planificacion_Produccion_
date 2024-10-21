@@ -8,12 +8,17 @@ def listaVCDtarget(cantPasajes):
     Generar una lista en la que se almacene la VCD que se desea alcanzar en cada pasaje, r
     ecibe como parámetro la cantidad de pasajes, la cual es ingresada por teclado (por el usuario).
     """
-
     VCDstarget=[]
     for i in range(cantPasajes):
-        VCDtargetIngreso=input(f"Ingrese el valor de VCD target para el pasaje {i+1}: ").replace(',', '.')
-        VCDtarget=float(VCDtargetIngreso)
-        VCDstarget.append(VCDtarget)
+        Bandera= False
+        while not Bandera:
+            try:
+                VCDtargetIngreso=input(f"Ingrese el valor de VCD target para el pasaje {i+1}: ").replace(',', '.')
+                VCDtarget=float(VCDtargetIngreso)
+                VCDstarget.append(VCDtarget)
+                Bandera=True
+            except ValueError:
+                print("Error: Debe ingresar un número válido para VCD target.")
     return VCDstarget
 
 def calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp):
@@ -56,12 +61,24 @@ def agregar_solucion_adicional():
     Preguntar si se desea agregar una solución adicional durante la etapa productiva, 
     en caso afirmativo consultar qué volumen de esta solución se agregará.
     """
-    agregar_solucion = input("¿Desea agregar una solución adicional durante la etapa productiva? (si/no): ").strip().lower().replace('í', 'i') # Comandos para pasar la respuesta ingresada por teclado a minúscula y remover el acento de ser necesario.
+    Bandera=False
+    while not Bandera:
+        agregar_solucion = input("¿Desea agregar una solución adicional durante la etapa productiva? (si/no): ").strip().lower().replace('í', 'i') # Comandos para pasar la respuesta ingresada por teclado a minúscula y remover el acento de ser necesario.
+        if agregar_solucion in ["si","no"]:
+            Bandera= True
+        else:
+            print("Error: Ingrese 'si' o 'no'.")
+            
     if agregar_solucion == "si":
-        volumen_adicional = float(input("Ingrese el volumen de la solución adicional en ml que se añadirá en cada agregado: "))
-        periodo_sol_adicional=float(input("Por cuantos días agregará esta solución: "))
-        volumen_adicional_total=volumen_adicional*periodo_sol_adicional
-        return volumen_adicional_total
+        Bandera=False
+        while not Bandera:
+            try:
+                volumen_adicional = float(input("Ingrese el volumen de la solución adicional en ml que se añadirá en cada agregado: "))
+                periodo_sol_adicional=float(input("Por cuantos días agregará esta solución: "))
+                volumen_adicional_total=volumen_adicional*periodo_sol_adicional
+                return volumen_adicional_total
+            except ValueError:
+                print("Error: Debe ingresar un número válido tanto para el dato del volumen como para el dato del período.")
     else:
         return None
 #######################################################################################
@@ -193,7 +210,13 @@ try:
         print("3. Calcular costos del proceso")
         print("4. Salir")
         
-        opcion = int(input("Ingrese el número de la opción seleccionada: "))
+        try:
+            opcion = int(input("Ingrese el número de la opción seleccionada: "))
+            if opcion < 1 or opcion > 4:
+                print("Error: Debe Ingresar un valor entre 1 y 4.")
+                opcion= None
+        except ValueError:
+            print("Error: El valor ingresado es inválido.")
         
         if opcion == 1:
             print("SE ENCUENTRA EN LA SECCIÓN DE CARGA DE DATOS PARA GENERAR UN NUEVO PROCESO")
@@ -259,8 +282,11 @@ try:
             Función lambda para el calculo de Cantidad de Medio Productivo por agregado necesario en el proceso:
             
             """
-            diasAgregadoFeed=diasFB[1::periodoFeed]
-            cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: "{:.1f}".format((volFinalFB-volInicialFB)/(len(diasAgregadoFeed))) 
+            try:
+                diasAgregadoFeed=diasFB[1::periodoFeed]
+                cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: "{:.1f}".format((volFinalFB-volInicialFB)/(len(diasAgregadoFeed)))
+            except ZeroDivisionError:
+                print("Error: La cantidad de días de agregado de Feed no puede ser cero.Reingrese un dato válido.") 
             
             """
             Información necesaria para las funciones involucradas en el cálculo de glucosa

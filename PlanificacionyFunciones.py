@@ -29,10 +29,13 @@ def calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp):
     """
     listavolFinalPasajes=[]
     for i in range(cantPasajes):
-        volFinalPasaje=(VCDi*volInicialExp)/VCDstarget[i]
-        listavolFinalPasajes.append(volFinalPasaje)
-        VCDi=VCDstarget[i]
-        volInicialExp=volFinalPasaje 
+        try:
+            volFinalPasaje=(VCDi*volInicialExp)/VCDstarget[i]
+            listavolFinalPasajes.append(volFinalPasaje)
+            VCDi=VCDstarget[i]
+            volInicialExp=volFinalPasaje
+        except ZeroDivisionError:
+            print(f"Error: La VCD target no puede ser 0 en el pasaje {i+1}")
     return listavolFinalPasajes
 
 def calcularMedioExp(listavolFinalPasajes,volInicialExp):
@@ -130,7 +133,7 @@ def AgregadosGluc(diasAgregadoFeed, aporte_Gluc_MedioProd_inicial, aporte_Gluc_M
             Gluc_Agregar = 0
         
         GlucPorAgregado.append(Gluc_Agregar)
-                
+        
         calcuGlucEsperada = (GlucTarget/ 10000) + (aporte_Gluc_MedioProd/ 10000)
             
     return GlucPorAgregado
@@ -141,13 +144,25 @@ Combinación de funciones para efectuar los cálculos de los costos que conlleva
 def calcular_costos():
     pass
 #######################################################################################
-"""
-Combinación de funciones para efectuar los cálculos de productividad esperada:
-"""
-def calcular_productividad():
-    pass
+def calcular_productividad_esperada(listaTasaCrecimiento, cantdiasFB):
+    """
+    Calcular la productividad esperada del proceso.
+    Recibe como parámetros:
+    - listaTasaCrecimiento: Lista de la tasa de crecimiento diaria (VCD).
+    - cantdiasFB: Cantidad de días de la etapa productiva.
+    
+    Retorna la productividad total estimada en gramos.
+    """
+    PRODUCTIVIDAD_FACTOR = 1.25  # g de producto por VCD y por día
+    productividad_total = 0
+
+    for vcd_dia in listaTasaCrecimiento[:cantdiasFB]:
+        productividad_diaria = vcd_dia * PRODUCTIVIDAD_FACTOR
+        productividad_total += productividad_diaria
+
+    return productividad_total
 #######################################################################################
-def cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc):
+def cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc, productividad_esperada):
     """"
     Crear un diccionario que será completado con las características de la molécula.
     Parámetros de ingreso: nombre_molecula,ListavolFinalPasajes,volInicialFB,diasAgregadoFeed,volFinalFB,diasxpasaje,cantPasajes,cantdiasFB.
@@ -169,12 +184,14 @@ def cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, di
     proceso["gluc_consumida"]=["{:.2f}".format(tasa) for tasa in lista_Gluc_Consumida]
     
     proceso["Agregados_Glucosa"]=["{:.2f}".format(tasa) for tasa in lista_Agregados_Gluc]
-    
+        
     volumen_sol_adicional = agregar_solucion_adicional()
     if volumen_sol_adicional is not None:
         proceso["Volumen_Solución_Adicional"] = "{:.1f}".format(volumen_sol_adicional)
     else:
         proceso["Volumen_Solución_Adicional"] = "No se agrega solución adicional" 
+    
+    proceso["productividad_esperada"] = "{:.2f}".format(productividad_esperada)
          
     return proceso         
 #######################################################################################
@@ -193,6 +210,7 @@ def mostrar_todos_los_procesos():
 def mostrar_proceso(proceso):
     """
     Mostrar los detalles de un proceso guardados en la función "cargar_datos_proceso" como valores de las claves.
+    
     """
     print(f"Nombre de la molécula: {proceso['nombre_molecula']}")
     print(f"Duración del Proceso: {proceso['Duracion_Proceso']}")
@@ -203,6 +221,7 @@ def mostrar_proceso(proceso):
     print(f"El consumo de glucosa esperada es: {proceso["gluc_consumida"]} g/l")
     print(f"La concentración de glucosa a agergar por cada día en el que se realiza monitoreo es: {proceso["Agregados_Glucosa"]} kg/l")
     print(f"Volumen de Solución Adicional: {proceso['Volumen_Solución_Adicional']} ml")
+    print(f"La productividad esperada para el proceso es de: {proceso["productividad_esperada"]} gramos/L.")
 
 #######################################################################################
 """
@@ -217,7 +236,6 @@ try:
         print("2. Ver procesos guardados")
         print("3. Calcular costos del proceso")
         print("4. Salir")
-        
         try:
             opcion = int(input("Ingrese el número de la opción seleccionada: "))
             if opcion < 1 or opcion > 4:
@@ -294,7 +312,7 @@ try:
                 diasAgregadoFeed=diasFB[1::periodoFeed]
                 cantFeedPorAgregado= lambda diasAgregadoFeed,volFinalFB,volInicialFB: "{:.1f}".format((volFinalFB-volInicialFB)/(len(diasAgregadoFeed)))
             except ZeroDivisionError:
-                print("Error: La cantidad de días de agregado de Feed no puede ser cero.Reingrese un dato válido.") 
+                print("Error: La cantidad de días de agregado de Feed no puede ser cero.Reingrese un dato válido.")
             
             """
             Información necesaria para las funciones involucradas en el cálculo de glucosa
@@ -302,22 +320,25 @@ try:
             VCDiFB=VCDstarget[-1]
             DURACION_POR_DIA=24 #h.
             TASA_ESPECIFICA_CONSUMO_GLUC=0.04 #g/cel/24h 
-            APORTE_GLUC_MEDIOPROD=4.5 #g/L
+            APORTE_GLUC_MEDIOPROD=30 #g/L
             DUPLICACION=1.2
             FeedPorAgregados = float(cantFeedPorAgregado(diasAgregadoFeed, volFinalFB, volInicialFB))
-            listaTasaCrecimiento = tasa_crecimiento(VCDiFB, DURACION_POR_DIA, diasAgregadoFeed)
-            calcular_volumen_acumulado = lambda volInicialFB, FeedPorAgregados, dias: [volInicialFB + FeedPorAgregados * i for i in range(len(dias))]
+            listaTasaCrecimiento = tasa_crecimiento(VCDiFB, DURACION_POR_DIA, diasAgregadoFeed,DUPLICACION)
+            
+            calcular_volumen_acumulado = lambda volInicialFB, FeedPorAgregados, dias: [volInicialFB + FeedPorAgregados * i for i in range(len(dias))]   
+        
             lista_Gluc_Consumida= calGlucConsumida(volInicialFB,FeedPorAgregados,TASA_ESPECIFICA_CONSUMO_GLUC,diasAgregadoFeed,listaTasaCrecimiento)
             aporte_Gluc_MedioProd_inicial=APORTE_GLUC_MEDIOPROD*volInicialFB
             aporte_Gluc_MedioProd= APORTE_GLUC_MEDIOPROD*FeedPorAgregados
             GlucTarget=float(input("Ingrese el valor de concentración de glucosa en la que desea mantener el cultivo durante la etapa productiva en g/L:"))
             lista_Agregados_Gluc=AgregadosGluc(diasAgregadoFeed,aporte_Gluc_MedioProd_inicial,aporte_Gluc_MedioProd,GlucTarget,lista_Gluc_Consumida)
+            productividad_esperada = calcular_productividad_esperada(listaTasaCrecimiento, cantdiasFB)
+            proceso = cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc,productividad_esperada)
             
-            proceso = cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc)
             # Guardar el proceso en el diccionario global
             procesos_guardados[proceso["nombre_molecula"]]=proceso
             print(f"Proceso para {proceso['nombre_molecula']} guardado exitosamente.\n")
-            
+
             
         elif opcion == 2:
             print("Los procesos almacenados son:")
@@ -343,4 +364,3 @@ finally:
     print("El programa ha finalizado, gracias por utilizarlo.")
 
 #######################################################################################
- 

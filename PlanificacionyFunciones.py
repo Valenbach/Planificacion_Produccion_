@@ -85,46 +85,54 @@ def agregar_solucion_adicional():
 """
 Combinación de funciones para calucular la glucosa necesaria para el proceso, durante la etapa productiva:
 """
-def tasa_crecimiento(VCDiFB, DURACION_POR_DIA, diasAgregadoFeed):
+def tasa_crecimiento(VCDiFB, DURACION_POR_DIA, diasAgregadoFeed, DUPLICACION):
+    """"
+    Estimar el crecimiento celular esperado en los días en que se agrega Feed y crear una lista con estos datos.Recibe como parámetros: VCDiFB (VCD inicial de la etapa productiva), DURACION_POR_DIA (variable fija que transforma a la cantidad de días en horas), diasAgregadoFeed y DUPLICACION (factor de duplicacion estimado).
+    """
     listaTasa_crecimiento = []
-    VCDf = VCDiFB * 2
+    VCDf = VCDiFB
     
-    for i in range(len(diasAgregadoFeed)):
-        crecimiento = VCDf / (diasAgregadoFeed[i] * DURACION_POR_DIA)
+    for dia in diasAgregadoFeed:
+        crecimiento = VCDf * DUPLICACION / DURACION_POR_DIA
         crecimientoRedondeado = float("{:.3f}".format(crecimiento))
         listaTasa_crecimiento.append(crecimientoRedondeado)
-        VCDf *= 2
+        VCDf*=  DUPLICACION
         
     return listaTasa_crecimiento
 
 def calGlucConsumida(volInicialFB, FeedPorAgregados, TASA_ESPECIFICA_CONSUMO_GLUC, diasAgregadoFeed, tasa_crecimiento):
+    """"
+    Calcular la glucosa consumida en los perídos de tiempo entre los días de agregado de feed y crear una lista con estos datos.Recibe como parámetros: volInicialFB (volumen inicial de la etapa productiva), FeedPorAgregados (cantidad de feed que se añade en cada agregregado, siempre se agrega el mismo volumen), TASA_ESPECIFICA_CONSUMO_GLUC (factor de consumo de glucosa estimado), diasAgregadoFeed y la lista tasa_crecimiento obtenida con la función anterior.
+    """
+    volAcumulado = calcular_volumen_acumulado(volInicialFB, FeedPorAgregados, diasAgregadoFeed)
     listaGlucConsumida = []
-    MedioProdAcumulado = FeedPorAgregados + volInicialFB
-    
     for i in range(len(diasAgregadoFeed)):
-        GlucConsumida = TASA_ESPECIFICA_CONSUMO_GLUC * MedioProdAcumulado * tasa_crecimiento[i]
-        listaGlucConsumida.append(GlucConsumida)
-        MedioProdAcumulado += FeedPorAgregados
+        gluc_consumida= (TASA_ESPECIFICA_CONSUMO_GLUC * volAcumulado[i] * tasa_crecimiento[i])/10
+        listaGlucConsumida.append(gluc_consumida)
     
     return listaGlucConsumida
 
 def AgregadosGluc(diasAgregadoFeed, aporte_Gluc_MedioProd_inicial, aporte_Gluc_MedioProd, GlucTarget, lista_Gluc_Consumida):
+    """"
+    Estimar la glucosa que se necesitará agregar dependiendo del valor target en que se desea mantener ésta durante el la etapa productiva, en los días de agregado de feed y crear una lista con estos datos.Recibe como parámetros: diasAgregadoFeed, aporte_Gluc_MedioProd_inicial (aporte de glucosa del medio productivo que se agrega al inicio de la etapa), aporte_Gluc_MedioProd (aporte de glucosa del feed en cada agregado) GlucTarget (concentración de glucosa en la que se desea mantener la etapa productiva) y la lista lista_Gluc_Consumida obtenida con la función anterior.
+    """
     GlucPorAgregado = []
-    calcuGlucEsperada = aporte_Gluc_MedioProd_inicial
+    calcuGlucEsperada = aporte_Gluc_MedioProd_inicial / 10000
     
     for i in range(len(diasAgregadoFeed)):
-        calcuGlucEsperada -= lista_Gluc_Consumida[i]
         
-        if GlucTarget < calcuGlucEsperada:
-            Gluc_Agregar = 0
+        calcuGlucEsperada -= lista_Gluc_Consumida[i] / 10000
+                
+        if calcuGlucEsperada < GlucTarget :
+            Gluc_Agregar = ((GlucTarget / 10000) - calcuGlucEsperada)*(-1)
+            calcuGlucEsperada = GlucTarget / 10000
         else:
-            Gluc_Agregar = GlucTarget - calcuGlucEsperada
+            Gluc_Agregar = 0
         
         GlucPorAgregado.append(Gluc_Agregar)
-        
-        # Asegurar que la glucosa esperada se reinicia cada ciclo
-        calcuGlucEsperada += aporte_Gluc_MedioProd
-    
+                
+        calcuGlucEsperada = (GlucTarget/ 10000) + (aporte_Gluc_MedioProd/ 10000)
+            
     return GlucPorAgregado
 #######################################################################################
 """
@@ -192,8 +200,8 @@ def mostrar_proceso(proceso):
     print(f"Volumen de Medio de Productivo con el que se debe iniciar el proceso: {proceso['Volumen_Inicial']} litros")
     print(f"Volumen de Solución Feed a añadir en cada agregado: {proceso['Volumen_feed_por_agregado']} litros")
     print(f"El crecimiento esperado por día de monitoreo es:{proceso["tasa_crecimiento"]}")
-    print(f"La concentración de glucosa a agergar por cada día en el que se realiza monitoreo es: {proceso["Agregados_Glucosa"]} g/l")
     print(f"El consumo de glucosa esperada es: {proceso["gluc_consumida"]} g/l")
+    print(f"La concentración de glucosa a agergar por cada día en el que se realiza monitoreo es: {proceso["Agregados_Glucosa"]} kg/l")
     print(f"Volumen de Solución Adicional: {proceso['Volumen_Solución_Adicional']} ml")
 
 #######################################################################################
@@ -295,8 +303,10 @@ try:
             DURACION_POR_DIA=24 #h.
             TASA_ESPECIFICA_CONSUMO_GLUC=0.04 #g/cel/24h 
             APORTE_GLUC_MEDIOPROD=4.5 #g/L
+            DUPLICACION=1.2
             FeedPorAgregados = float(cantFeedPorAgregado(diasAgregadoFeed, volFinalFB, volInicialFB))
             listaTasaCrecimiento = tasa_crecimiento(VCDiFB, DURACION_POR_DIA, diasAgregadoFeed)
+            calcular_volumen_acumulado = lambda volInicialFB, FeedPorAgregados, dias: [volInicialFB + FeedPorAgregados * i for i in range(len(dias))]
             lista_Gluc_Consumida= calGlucConsumida(volInicialFB,FeedPorAgregados,TASA_ESPECIFICA_CONSUMO_GLUC,diasAgregadoFeed,listaTasaCrecimiento)
             aporte_Gluc_MedioProd_inicial=APORTE_GLUC_MEDIOPROD*volInicialFB
             aporte_Gluc_MedioProd= APORTE_GLUC_MEDIOPROD*FeedPorAgregados

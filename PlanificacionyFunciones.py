@@ -142,7 +142,8 @@ def AgregadosGluc(diasAgregadoFeed, aporte_Gluc_MedioProd_inicial, aporte_Gluc_M
 Combinación de funciones para efectuar los cálculos de los costos que conllevará el preceso de acuerdo a la información recolectada:
 """
 def calcular_costos():
-    pass
+    
+    
 #######################################################################################
 def calcular_productividad_esperada(listaTasaCrecimiento, cantdiasFB):
     """
@@ -161,8 +162,9 @@ def calcular_productividad_esperada(listaTasaCrecimiento, cantdiasFB):
         productividad_total += productividad_diaria
 
     return productividad_total
+    pass
 #######################################################################################
-def cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc, productividad_esperada):
+def cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB,DiasProdu, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc, productividad_esperada):
     """"
     Crear un diccionario que será completado con las características de la molécula.
     Parámetros de ingreso: nombre_molecula,ListavolFinalPasajes,volInicialFB,diasAgregadoFeed,volFinalFB,diasxpasaje,cantPasajes,cantdiasFB.
@@ -172,6 +174,10 @@ def cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, di
     proceso["nombre_molecula"] = nombre_molecula 
     
     proceso["Volumen de Medio de Expansión necesario"]="{:.1f}".format(calcularMedioExp(ListavolFinalPasajes,volInicialExp))
+    
+    proceso["Duración de etapa Expansiva"]=diasxpasaje*cantPasajes
+    
+    proceso["Duración de la etapa productiva"]=DiasProdu
       
     proceso["Volumen_Inicial"]=volInicialFB
         
@@ -194,6 +200,11 @@ def cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, di
     proceso["productividad_esperada"] = "{:.2f}".format(productividad_esperada)
          
     return proceso         
+
+"""
+Función para calcular costos de proceso:
+
+"""
 #######################################################################################
 """
 Combinación de funciones para mostrar procesos guardados:
@@ -214,6 +225,8 @@ def mostrar_proceso(proceso):
     """
     print(f"Nombre de la molécula: {proceso['nombre_molecula']}")
     print(f"Duración del Proceso: {proceso['Duracion_Proceso']}")
+    print(f"La duración de la etapa expansiva es de {proceso['Duración de etapa Expansiva']} días")
+    print(f"La duración de la etapa productiva es de {proceso['Duración de etapa la productiva']} días")
     print(f"Volumen de Medio de Expansión necesario: {proceso['Volumen de Medio de Expansión necesario']} ml")
     print(f"Volumen de Medio de Productivo con el que se debe iniciar el proceso: {proceso['Volumen_Inicial']} litros")
     print(f"Volumen de Solución Feed a añadir en cada agregado: {proceso['Volumen_feed_por_agregado']} litros")
@@ -333,7 +346,7 @@ try:
             GlucTarget=float(input("Ingrese el valor de concentración de glucosa en la que desea mantener el cultivo durante la etapa productiva en g/L:"))
             lista_Agregados_Gluc=AgregadosGluc(diasAgregadoFeed,aporte_Gluc_MedioProd_inicial,aporte_Gluc_MedioProd,GlucTarget,lista_Gluc_Consumida)
             productividad_esperada = calcular_productividad_esperada(listaTasaCrecimiento, cantdiasFB)
-            proceso = cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc,productividad_esperada)
+            proceso = cargar_datos_proceso(nombre_molecula, ListavolFinalPasajes, volInicialFB,diasFB, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc,productividad_esperada)
             
             # Guardar el proceso en el diccionario global
             procesos_guardados[proceso["nombre_molecula"]]=proceso

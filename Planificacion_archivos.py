@@ -208,12 +208,9 @@ def cargar_datos(nombre_molecula, ListavolFinalPasajes, volInicialFB,DiasProdu, 
     # Agregamos el nuevo proceso a la lista de procesos
     volumen_sol_adicional = agregar_solucion_adicional()
     if volumen_sol_adicional is not None:
-        Solu_adic = "{:.1f}".format(volumen_sol_adicional)
-        
+        Solu_adic= "{:.1f}".format(volumen_sol_adicional)
     else:
-        Solu_adic= "No se agrega solución adicional" 
-    
-        proceso["productividad_esperada"] = "{:.2f}".format(productividad_esperada)
+        Solu_adic= "No se agrega solución adicional"
     nuevo_proceso = {"nombre_molecula": nombre_molecula, "Volumen de Medio de Expansion necesario":"{:.1f}".format(calcularMedioExp(ListavolFinalPasajes,volInicialExp)),
                      "Duracion de etapa Expansiva": diasxpasaje*cantPasajes,"Duracion de la etapa productiva":DiasProdu,
                      "Volumen_Inicial":volInicialFB,"Volumen_feed_por_agregado":cantFeedPorAgregado(diasAgregadoFeed,volFinalFB,volInicialFB),
@@ -279,7 +276,7 @@ def obtener_datos_por_molecula(nombre_molecula):
                 f"- Tasas de Crecimiento: {', '.join(proceso['tasa_crecimiento'])}\n"
                 f"- Glucosa Consumida: {', '.join(proceso['gluc_consumida'])}\n"
                 f"- Agregados de Glucosa: {', '.join(proceso['Agregados_Glucosa'])}\n"
-                f"- Solución Adicional: {proceso['solucion_adicional']}\n"
+                f"- Solución Adicional: {proceso['salucion adicional']}\n"
                 f"- Productividad Esperada: {proceso['productividad_esperada']}\n"
             )
     return "Molécula no encontrada."

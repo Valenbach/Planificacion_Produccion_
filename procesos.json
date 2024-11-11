@@ -1,5 +1,4 @@
 [
-
     {
         "nombre_molecula": "mb06",
         "Volumen de Medio de Expansi\u00f3n necesario": "30.0",
@@ -94,6 +93,41 @@
             "0.35"
         ],
         "salucion adicional": "12.0",
+        "productividad_esperada": "1.24"
+    },
+    {
+        "nombre_molecula": "mb03",
+        "Volumen de Medio de Expansion necesario": "40.0",
+        "Duracion de etapa Expansiva": 6,
+        "Duracion de la etapa productiva": 13,
+        "Volumen_Inicial": 300,
+        "Volumen_feed_por_agregado": "116.7",
+        "Duracion_Proceso": 19,
+        "tasa_crecimiento": [
+            "0.10",
+            "0.12",
+            "0.14",
+            "0.17",
+            "0.21",
+            "0.25"
+        ],
+        "gluc_consumida": [
+            "0.12",
+            "0.20",
+            "0.31",
+            "0.45",
+            "0.63",
+            "0.88"
+        ],
+        "Agregados_Glucosa": [
+            "0.90",
+            "0.35",
+            "0.35",
+            "0.35",
+            "0.35",
+            "0.35"
+        ],
+        "salucion adicional": "36000.0",
         "productividad_esperada": "1.24"
     }
 ]

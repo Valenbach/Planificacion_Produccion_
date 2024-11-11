@@ -229,6 +229,7 @@ def cargar_datos(nombre_molecula, ListavolFinalPasajes, volInicialFB,DiasProdu, 
         json.dump(data, procesos, indent=4) 
     print("proceso guardado correctamente")
        
+    
 
 """
 Función para calcular costos de proceso:
@@ -261,13 +262,28 @@ def obtener_datos_por_molecula(nombre_molecula):
         with open("procesos.json", "r") as procesos:
             data = json.load(procesos)
     except (IOError, json.JSONDecodeError):
-        return f"No se han guardado procesos aún."
+        return "No se han guardado procesos aún."
 
     # Buscar la molécula en los datos cargados
     for proceso in data:
         if proceso["nombre_molecula"].lower() == nombre_molecula.lower():
-            return proceso
+            # Formateamos y retornamos los datos de la molécula
+            return (
+                f"\nDatos de la molécula '{proceso['nombre_molecula']}':\n"
+                f"- Volumen de Medio de Expansión necesario: {proceso['Volumen de Medio de Expansion necesario']} ml\n"
+                f"- Duración de la etapa Expansiva: {proceso['Duracion de etapa Expansiva']} días\n"
+                f"- Duración de la etapa Productiva: {proceso['Duracion de la etapa productiva']} días\n"
+                f"- Volumen Inicial: {proceso['Volumen_Inicial']} ml\n"
+                f"- Volumen Feed por Agregado: {proceso['Volumen_feed_por_agregado']} ml\n"
+                f"- Duración Total del Proceso: {proceso['Duracion_Proceso']} días\n"
+                f"- Tasas de Crecimiento: {', '.join(proceso['tasa_crecimiento'])}\n"
+                f"- Glucosa Consumida: {', '.join(proceso['gluc_consumida'])}\n"
+                f"- Agregados de Glucosa: {', '.join(proceso['Agregados_Glucosa'])}\n"
+                f"- Solución Adicional: {proceso['solucion_adicional']}\n"
+                f"- Productividad Esperada: {proceso['productividad_esperada']}\n"
+            )
     return "Molécula no encontrada."
+
 #######################################################################################
 """
 #Programa Principal bloque 1= Menu interactivo principal:
@@ -388,9 +404,8 @@ try:
             mostrar_nombres_moleculas()
         
         elif opcion == 3:
-            Nombre_molecula = input("Ingrese el nombre de la molécula para obtener los datos: ")
-            datos_molecula = obtener_datos_por_molecula(Nombre_molecula)
-            print(datos_molecula)
+            nombre = input("Ingrese el nombre de la molécula: ")
+            print(obtener_datos_por_molecula(nombre))
         elif opcion == 4:
             print("Se encuentra en la función para calcular los costos del proceso")
             diasexp=int(input("ingseese la duración de la etapa expansiva"))

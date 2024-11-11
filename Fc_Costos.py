@@ -1,4 +1,5 @@
-"""A continuación se desarrollará la función que se utilizará 
+"""
+A continuación se desarrollará la función que se utilizará 
 para calcular los costos de producción de un proceso específico,
 la idea es establecer una tarifa que aumentará en función de los días de proceso.
 

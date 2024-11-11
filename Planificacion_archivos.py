@@ -238,6 +238,24 @@ Función para calcular costos de proceso:
 """
 Combinación de funciones para mostrar procesos guardados:
 """
+def mostrar_nombres_moleculas():
+    try:
+        # Cargar los datos del archivo JSON
+        with open("procesos.json", "r") as procesos:
+            data = json.load(procesos)
+        
+        # Extraer y mostrar los nombres de todas las moléculas guardadas
+        nombres = [proceso["nombre_molecula"] for proceso in data]
+        if nombres:
+            print("Moléculas guardadas:")
+            for nombre in nombres:
+                print("- " + nombre)
+        else:
+            print("No hay moléculas guardadas.")
+    
+    except (IOError, json.JSONDecodeError):
+        print("No se han guardado procesos aún.")
+
 def obtener_datos_por_molecula(nombre_molecula):
     try:
         with open("procesos.json", "r") as procesos:
@@ -260,8 +278,9 @@ try:
         print("\nBienvenido al menú principal, seleccione una opción para continuar\n")
         print("1. Cargar nuevo proceso")
         print("2. Ver procesos guardados")
-        print("3. Calcular costos del proceso")
-        print("4. Salir")
+        print("3. Seleccionar datos de una molecula")
+        print("4. Calcular costos del proceso")
+        print("5. Salir")
         try:
             opcion = int(input("Ingrese el número de la opción seleccionada: "))
             if opcion < 1 or opcion > 4:
@@ -366,7 +385,7 @@ try:
             
         elif opcion == 2:
             print("Los procesos almacenados son:")
-            mostrar_todos_los_procesos()
+            mostrar_nombres_moleculas()
         
         elif opcion == 3:
             Nombre_molecula = input("Ingrese el nombre de la molécula para obtener los datos: ")

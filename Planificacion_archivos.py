@@ -150,34 +150,51 @@ la idea es establecer una tarifa que aumentará en función de los días de proc
 
 """
 
-def Calcular_costos_dias(expansion, productivo):
-    costo_base_exp=1200
-    costo_base_produ=3500
-    
-    dias_exp=expansion
-    dias_produ=productivo
-    
-    if dias_exp>=1 and dias_exp<=3:
-        costo_exp=costo_base_exp +(dias_exp*300)
-    elif dias_exp > 4 and dias_exp <=8:
-        costo_exp=costo_base_exp +(dias_exp*400)
-    elif dias_exp > 8 and dias_exp <=12:
-        costo_exp=costo_base_exp +(dias_exp*700)
-    elif dias_exp > 12:
-        costo_exp=costo_base_exp +(dias_exp*900)   
-    
-    if dias_produ>=1 and dias_produ<=4:
-        costo_produ= costo_base_produ +(dias_produ*700)
-    elif dias_produ	>4 and dias_produ <=6:
-        costo_produ= costo_base_produ +(dias_produ*900)
-    elif dias_produ	>6 and dias_produ <=9:
-        costo_produ= costo_base_produ +(dias_produ*1200)       
-    elif dias_produ	>9 and dias_produ <=12:
-        costo_produ= costo_base_produ +(dias_produ*1500)
-    elif dias_produ	>12:
-        costo_produ= costo_base_produ +(dias_produ*2000)    
-        
-    return costo_exp, costo_produ
+def calcular_costos(molecula):
+    try:
+        with open("procesos.json", "r") as procesos:
+            data = json.load(procesos)
+    except (IOError, json.JSONDecodeError):
+        return "No se han guardado procesos aún."
+
+    # Buscar la molécula en los datos cargados
+    for proceso in data:
+        if proceso["nombre_molecula"].lower() == molecula.lower():
+            dias_exp = proceso['Duracion de etapa Expansiva']
+            dias_produ = proceso['Duracion de la etapa productiva']
+            costo_base_exp = 1200
+            costo_base_produ = 3500
+            
+            # Cálculo del costo de expansión
+            if 1 <= dias_exp <= 3:
+                costo_exp = costo_base_exp + (dias_exp * 300)
+            elif 4 <= dias_exp <= 8:
+                costo_exp = costo_base_exp + (dias_exp * 400)
+            elif 8 < dias_exp <= 12:
+                costo_exp = costo_base_exp + (dias_exp * 700)
+            elif dias_exp > 12:
+                costo_exp = costo_base_exp + (dias_exp * 900)
+            else:
+                costo_exp = 0  # Si no hay días de expansión, no hay costo
+
+            # Cálculo del costo productivo
+            if 1 <= dias_produ <= 4:
+                costo_produ = costo_base_produ + (dias_produ * 700)
+            elif 4 < dias_produ <= 6:
+                costo_produ = costo_base_produ + (dias_produ * 900)
+            elif 6 < dias_produ <= 9:
+                costo_produ = costo_base_produ + (dias_produ * 1200)
+            elif 9 < dias_produ <= 12:
+                costo_produ = costo_base_produ + (dias_produ * 1500)
+            elif dias_produ > 12:
+                costo_produ = costo_base_produ + (dias_produ * 2000)
+            else:
+                costo_produ = 0  # Si no hay días productivos, no hay costo
+            
+            return costo_exp, costo_produ
+
+    # Mensaje si no se encuentra la molécula
+    return "Molécula no encontrada."
 #######################################################################################
 def calcular_productividad_esperada(listaTasaCrecimiento, cantdiasFB):
     """
@@ -405,9 +422,8 @@ try:
             print(obtener_datos_por_molecula(nombre))
         elif opcion == 4:
             print("Se encuentra en la función para calcular los costos del proceso")
-            diasexp=int(input("ingseese la duración de la etapa expansiva"))
-            díasFb=int(input("Ingrese la duración de la etapa expansiva"))
-            Costo_Expansiva, Costo_productiva=Calcular_costos_dias(diasexp,díasFb)
+            nombre = input("Ingrese el nombre de la molécula: ")
+            Costo_Expansiva, Costo_productiva= calcular_costos(nombre)
             Costo_Total=Costo_productiva+Costo_Expansiva
             print(f"\nEl costo de produción de la etapa expansiva es de ........................${Costo_Expansiva}\nEl costo de producción de la etapa productiva es de.......................${Costo_productiva}\nSiendo el costo total de producción de la molécula........................${Costo_Total}")
 

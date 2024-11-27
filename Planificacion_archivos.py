@@ -213,7 +213,8 @@ def calcular_productividad_esperada(listaTasaCrecimiento, cantdiasFB):
         productividad_total += productividad_diaria
 
     return productividad_total
-#######################################################################################
+#########################################################################################################################################################################
+
 def cargar_datos(nombre_molecula, ListavolFinalPasajes, volInicialFB,DiasProdu, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc, productividad_esperada):
     # Intentamos cargar el archivo si existe, o inicializamos una lista vacía si no
     try:
@@ -249,7 +250,7 @@ def cargar_datos(nombre_molecula, ListavolFinalPasajes, volInicialFB,DiasProdu, 
 Función para calcular costos de proceso:
 
 """
-#######################################################################################
+################################################################################################################################################################
 """
 Combinación de funciones para mostrar procesos guardados:
 """
@@ -298,7 +299,24 @@ def obtener_datos_por_molecula(nombre_molecula):
             )
     return "Molécula no encontrada."
 
-#######################################################################################
+###########################################################################################################################################
+"""
+Función para validar que los números ingresaods sean positivos
+
+"""
+def solicitar_valor_positivo(mensaje):
+    while True:
+        try:
+            valor = float(input(mensaje).replace(',', '.'))
+            if valor <= 0:
+                print("Error: El valor no puede ser negativo. Intente nuevamente.")
+            else:
+                return valor
+        except ValueError:
+            print("Entrada inválida. Por favor, ingrese un número válido.")
+
+#############################################################################################################################################
+
 """
 #Programa Principal bloque 1= Menu interactivo principal:
 
@@ -313,8 +331,8 @@ try:
         print("5. Salir")
         try:
             opcion = int(input("Ingrese el número de la opción seleccionada: "))
-            if opcion < 1 or opcion > 4:
-                print("Error: Debe Ingresar un valor entre 1 y 4.")
+            if opcion < 1 or opcion > 5:
+                print("Error: Debe Ingresar un valor entre 1 y 5.")
                 opcion= None
         except ValueError:
             print("Error: El valor ingresado es inválido.")
@@ -326,12 +344,12 @@ try:
            
             """
             nombre_molecula = input("Ingrese el nombre de la molécula: ")
-
-            VCDinicial=input("Ingrese el valor de VCD con la que desea iniciar cada pasaje: ").replace(',', '.')
+        
+            VCDinicial=int(solicitar_valor_positivo("Ingrese el valor de VCD con la que desea iniciar cada pasaje: "))
             VCDi=float(VCDinicial)
 
-            cantPasajes=int(input("Ingrese la cantidad de pasajes que desea efectuar durante la etapa de expansión: "))
-            diasxpasaje=int(input("Ingrese la cantidad de días que desea que tenga cada pasaje: "))
+            cantPasajes=int(solicitar_valor_positivo("Ingrese la cantidad de pasajes que desea efectuar durante la etapa de expansión: "))
+            diasxpasaje=int(solicitar_valor_positivo("Ingrese la cantidad de días que desea que tenga cada pasaje: "))
 
             """
             Función lambda para calcular el total de los días de la estapa de expansión:
@@ -339,7 +357,7 @@ try:
             """
             calcular_dias_Exp=lambda diasxpasaje,cantPasajes: cantPasajes*diasxpasaje
 
-            volInicialExp=int(input("Ingrese el volumen inicial del primer pasaje, en ml: "))
+            volInicialExp=int(solicitar_valor_positivo("Ingrese el volumen inicial del primer pasaje, en ml: "))
             VCDstarget=listaVCDtarget(cantPasajes)
             ListavolFinalPasajes=calcularVolFinalPasajes(VCDi,VCDstarget,cantPasajes,volInicialExp)
 
@@ -354,7 +372,7 @@ try:
             MatrizComoTabla(matrizBrx,ANCHO_COLUMNA)     
 
             #Bloque para determinar el volumen inicial de la etapa productiva:
-            volFinalFB=int(input("Ingrese el vólumen final al cual desea llegar en su etapa productiva en litros: "))
+            volFinalFB=int(solicitar_valor_positivo("Ingrese el vólumen final al cual desea llegar en su etapa productiva en litros: "))
             Bandera=True
             while Bandera:
                 if volFinalFB<=550 and volFinalFB>= 300:
@@ -370,8 +388,8 @@ try:
                     print("El valor de volúmen Final ingresado no está dentro del rango permitido.")
                     volFinalFB = float(input("Ingrese un nuevo valor para volFinalFB dentro del rango permitido: "))
 
-            cantdiasFB=int(input("Ingrese la cantidad de días de la etapa productiva que tendrá su proceso: "))
-            periodoFeed=int(input("Ingrese cada cuántos días se agregará el Feed: "))
+            cantdiasFB=int(solicitar_valor_positivo("Ingrese la cantidad de días de la etapa productiva que tendrá su proceso: "))
+            periodoFeed=int(solicitar_valor_positivo("Ingrese cada cuántos días se agregará el Feed: "))
             
             """
             Función lambda para armar una lista con números en un rango de 0 hasta n-1 de acuerdo a la cantidad de días de la etapa productiva: 
@@ -405,7 +423,7 @@ try:
             lista_Gluc_Consumida= calGlucConsumida(volInicialFB,FeedPorAgregados,TASA_ESPECIFICA_CONSUMO_GLUC,diasAgregadoFeed,listaTasaCrecimiento)
             aporte_Gluc_MedioProd_inicial=APORTE_GLUC_MEDIOPROD*volInicialFB
             aporte_Gluc_MedioProd= APORTE_GLUC_MEDIOPROD*FeedPorAgregados
-            GlucTarget=float(input("Ingrese el valor de concentración de glucosa en la que desea mantener el cultivo durante la etapa productiva en g/L:"))
+            GlucTarget=float(solicitar_valor_positivo("Ingrese el valor de concentración de glucosa en la que desea mantener el cultivo durante la etapa productiva en g/L:"))
             lista_Agregados_Gluc=AgregadosGluc(diasAgregadoFeed,aporte_Gluc_MedioProd_inicial,aporte_Gluc_MedioProd,GlucTarget,lista_Gluc_Consumida)
             productividad_esperada = calcular_productividad_esperada(listaTasaCrecimiento, cantdiasFB)
             proceso = cargar_datos(nombre_molecula, ListavolFinalPasajes, volInicialFB,cantdiasFB, diasAgregadoFeed, volFinalFB, diasxpasaje, cantPasajes, cantdiasFB, listaTasaCrecimiento, lista_Gluc_Consumida, lista_Agregados_Gluc,productividad_esperada)
@@ -428,7 +446,7 @@ try:
             print(f"\nEl costo de produción de la etapa expansiva es de ........................${Costo_Expansiva}\nEl costo de producción de la etapa productiva es de.......................${Costo_productiva}\nSiendo el costo total de producción de la molécula........................${Costo_Total}")
 
         
-        elif opcion == 4:
+        elif opcion == 5:
             print("Saliendo del menú principal :)...")
             break
         

@@ -33,5 +33,28 @@
         ],
         "salucion adicional": "36000.0",
         "productividad_esperada": "1.24"
+    },
+    {
+        "nombre_molecula": "mb02",
+        "Volumen de Medio de Expansion necesario": "300.0",
+        "Duracion de etapa Expansiva": 1,
+        "Duracion de la etapa productiva": 4,
+        "Volumen_Inicial": 300,
+        "Volumen_feed_por_agregado": "350.0",
+        "Duracion_Proceso": 5,
+        "tasa_crecimiento": [
+            "0.10",
+            "0.12"
+        ],
+        "gluc_consumida": [
+            "0.12",
+            "0.31"
+        ],
+        "Agregados_Glucosa": [
+            "0.90",
+            "1.05"
+        ],
+        "salucion adicional": "No se agrega soluci\u00f3n adicional",
+        "productividad_esperada": "0.28"
     }
 ]

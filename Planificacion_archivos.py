@@ -1,5 +1,4 @@
 import json
-
 #################################FUNCIONES PARA CALCULAR VOLUMEN TOTAL DEL MEDIO################################################
 """"
 Con la combinación de las siguientes funciones se establece el volúmen final a utilizar de medio de expansión, 
@@ -332,12 +331,16 @@ def solicitar_valor_positivo(mensaje):
 """
 try:
     while True:
-        print("\nBienvenido al menú principal, seleccione una opción para continuar\n")
+        print("\n" + "="*40)
+        print(f"{'BIENVENIDO AL SISTEMA DE PLANIFICACIÓN DE PRODUCCIÓN':^40}")
+        print("="*40)
+        print("\nSeleccione una opción:")
         print("1. Cargar nuevo proceso")
         print("2. Ver procesos guardados")
-        print("3. Seleccionar datos de una molecula")
+        print("3. Seleccionar datos de una molécula")
         print("4. Calcular costos del proceso")
         print("5. Salir")
+
         try:
             opcion = int(input("Ingrese el número de la opción seleccionada: "))
             if opcion < 1 or opcion > 5:
@@ -347,7 +350,7 @@ try:
             print("Error: El valor ingresado es inválido.")
         
         if opcion == 1:
-            print("SE ENCUENTRA EN LA SECCIÓN DE CARGA DE DATOS PARA GENERAR UN NUEVO PROCESO")
+            print("\nHas seleccionado 'Cargar nuevo proceso'.")
             """
             Datos de ingresos, llamados de funciones y funciones lambda necesarios:
            
@@ -439,20 +442,34 @@ try:
 
             
         elif opcion == 2:
-            print("Los procesos almacenados son:")
+            print("\nHas seleccionado 'Ver procesos guardados'.")
             mostrar_nombres_moleculas()
         
         elif opcion == 3:
+            print("\nHas seleccionado 'Seleccionar datos de una molécula'.")
             nombre = input("Ingrese el nombre de la molécula: ")
             print(obtener_datos_por_molecula(nombre))
         elif opcion == 4:
-            print("Se encuentra en la función para calcular los costos del proceso")
+            print("\nHas seleccionado 'Calcular costos del proceso'.")
             nombre = input("Ingrese el nombre de la molécula: ")
             Costo_Expansiva, Costo_productiva= calcular_costos(nombre)
             Costo_Total=Costo_productiva+Costo_Expansiva
-            print(f"\nEl costo de produción de la etapa expansiva es de ........................${Costo_Expansiva}\nEl costo de producción de la etapa productiva es de.......................${Costo_productiva}\nSiendo el costo total de producción de la molécula........................${Costo_Total}")
-
-        
+            print("\n" + "="*50)
+            print(f"{'Cálculo de Costos del Proceso':^50}")
+            print("="*50)
+            
+            # Formatear los costos con 2 decimales y separador de miles
+            costo_exp_formateado = f"${Costo_Expansiva:,.2f}"
+            costo_produ_formateado = f"${Costo_productiva:,.2f}"
+            costo_total_formateado = f"${Costo_Total:,.2f}"
+            
+            # Imprimir los resultados alineados y con formato
+            print(f"\n{'Costo de la etapa expansiva:':<40} {costo_exp_formateado:>10}")
+            print(f"{'Costo de la etapa productiva:':<40} {costo_produ_formateado:>10}")
+            print(f"{'Costo total de producción:':<40} {costo_total_formateado:>10}")
+            
+            print("="*50)
+                       
         elif opcion == 5:
             print("Saliendo del menú principal :)...")
             break

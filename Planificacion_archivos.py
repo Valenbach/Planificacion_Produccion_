@@ -105,6 +105,15 @@ def tasa_crecimiento(VCDiFB, DURACION_POR_DIA, diasAgregadoFeed, DUPLICACION):
         
     return listaTasa_crecimiento
 
+def calcular_volumen_acumulado(volInicialFB, FeedPorAgregados, dias):
+    """
+    Calcula el volumen acumulado para cada día de agregado de feed.
+    """
+    vol_acumulado = []
+    for i in range(len(dias)):
+        vol_acumulado.append(volInicialFB + FeedPorAgregados * i)
+    return vol_acumulado
+
 def calGlucConsumida(volInicialFB, FeedPorAgregados, TASA_ESPECIFICA_CONSUMO_GLUC, diasAgregadoFeed, tasa_crecimiento):
     """"
     Calcular la glucosa consumida en los perídos de tiempo entre los días de agregado de feed y crear una lista con estos datos.Recibe como parámetros: volInicialFB (volumen inicial de la etapa productiva), FeedPorAgregados (cantidad de feed que se añade en cada agregregado, siempre se agrega el mismo volumen), TASA_ESPECIFICA_CONSUMO_GLUC (factor de consumo de glucosa estimado), diasAgregadoFeed y la lista tasa_crecimiento obtenida con la función anterior.
@@ -252,7 +261,7 @@ Función para calcular costos de proceso:
 """
 ################################################################################################################################################################
 """
-Combinación de funciones para mostrar procesos guardados:
+Función para mostrar procesos guardados:
 """
 def mostrar_nombres_moleculas():
     try:
@@ -416,9 +425,7 @@ try:
             APORTE_GLUC_MEDIOPROD=30 #g/L
             DUPLICACION=1.2
             FeedPorAgregados = float(cantFeedPorAgregado(diasAgregadoFeed, volFinalFB, volInicialFB))
-            listaTasaCrecimiento = tasa_crecimiento(VCDiFB, DURACION_POR_DIA, diasAgregadoFeed,DUPLICACION)
-            
-            calcular_volumen_acumulado = lambda volInicialFB, FeedPorAgregados, dias: [volInicialFB + FeedPorAgregados * i for i in range(len(dias))]   
+            listaTasaCrecimiento = tasa_crecimiento(VCDiFB, DURACION_POR_DIA, diasAgregadoFeed,DUPLICACION)   
         
             lista_Gluc_Consumida= calGlucConsumida(volInicialFB,FeedPorAgregados,TASA_ESPECIFICA_CONSUMO_GLUC,diasAgregadoFeed,listaTasaCrecimiento)
             aporte_Gluc_MedioProd_inicial=APORTE_GLUC_MEDIOPROD*volInicialFB

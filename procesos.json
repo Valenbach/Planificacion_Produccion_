@@ -56,5 +56,75 @@
         ],
         "salucion adicional": "No se agrega soluci\u00f3n adicional",
         "productividad_esperada": "0.28"
+    },
+    {
+        "nombre_molecula": "mb08",
+        "Volumen de Medio de Expansion necesario": "22.0",
+        "Duracion de etapa Expansiva": 4,
+        "Duracion de la etapa productiva": 12,
+        "Volumen_Inicial": 300,
+        "Volumen_feed_por_agregado": "116.7",
+        "Duracion_Proceso": 16,
+        "tasa_crecimiento": [
+            "0.15",
+            "0.18",
+            "0.22",
+            "0.26",
+            "0.31",
+            "0.37"
+        ],
+        "gluc_consumida": [
+            "0.18",
+            "0.30",
+            "0.46",
+            "0.67",
+            "0.95",
+            "1.32"
+        ],
+        "Agregados_Glucosa": [
+            "0.90",
+            "0.35",
+            "0.35",
+            "0.35",
+            "0.35",
+            "0.35"
+        ],
+        "salucion adicional": "4000.0",
+        "productividad_esperada": "1.86"
+    },
+    {
+        "nombre_molecula": "mb11",
+        "Volumen de Medio de Expansion necesario": "62.5",
+        "Duracion de etapa Expansiva": 4,
+        "Duracion de la etapa productiva": 12,
+        "Volumen_Inicial": 300,
+        "Volumen_feed_por_agregado": "116.7",
+        "Duracion_Proceso": 16,
+        "tasa_crecimiento": [
+            "0.10",
+            "0.12",
+            "0.14",
+            "0.17",
+            "0.21",
+            "0.25"
+        ],
+        "gluc_consumida": [
+            "0.12",
+            "0.20",
+            "0.31",
+            "0.45",
+            "0.63",
+            "0.88"
+        ],
+        "Agregados_Glucosa": [
+            "0.90",
+            "0.35",
+            "0.35",
+            "0.35",
+            "0.35",
+            "0.35"
+        ],
+        "salucion adicional": "600.0",
+        "productividad_esperada": "1.24"
     }
 ]
